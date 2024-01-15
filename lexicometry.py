@@ -31,8 +31,14 @@ def lister_fichiers(chemin:str)->list(str):
     Examples:
         lister_fichiers("subtitles") = ["subtitles/files.json",...]
     """
-    fichiers = [os.path.join(chemin, f) for f in os.listdir(chemin) if os.path.isfile(os.path.join(chemin, f))]
-    return fichiers
+    try:
+        os.path.isdir(chemin)
+        # Si le chemin est un dossier, retourner la liste des fichiers dans le dossier
+        fichiers = [os.path.join(chemin, f) for f in os.listdir(chemin) if os.path.isfile(os.path.join(chemin, f))]
+        return fichiers
+    except Exception as e:
+        print(f"Erreur : {e}")
+        return []
 
 
 def json_to_text(file:str)->str:
