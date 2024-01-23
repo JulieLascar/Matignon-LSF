@@ -1,0 +1,6 @@
+name: lexic-cr
+channels:
+  - defaults
+  - conda-forge
+  - nvidia
+prefix: /people/halbout/miniconda3/envs/lexic-cr
