@@ -123,3 +123,11 @@ def comparer_listes(liste1, liste2):
     return differences
 
 
+def get_sentences(input):
+    sentences = []
+    with open(input, encoding="utf-8") as f:
+        line = f.readline()
+        while line:
+            sentences.append(line.strip())
+            line = f.readline()
+    return sentences
