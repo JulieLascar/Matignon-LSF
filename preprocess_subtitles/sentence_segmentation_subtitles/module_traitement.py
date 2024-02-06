@@ -11,6 +11,27 @@ from datetime import datetime, timedelta
 Ce module regroupe les différentes fonctions utiles aux traitements des fichiers .vtt. 
 """
 
+def time_to_milliseconds(timestamp):
+
+    # Split the timestamp into hours, minutes, seconds, and milliseconds
+
+    milliseconds = int(timestamp.split('.')[1])
+
+    tmp = timestamp.split('.')[0]
+
+    hours, minutes, seconds = map(int, tmp.split(':'))
+
+    #seconds, milliseconds = map(int, seconds.split('.'))
+
+     
+
+    # Calculate the total milliseconds
+
+    total_milliseconds = (hours * 3600 + minutes * 60 + seconds) * 1000 + milliseconds
+
+    return total_milliseconds
+
+
 
 def lister_fichiers_with_path(dossier):
     path = dossier
