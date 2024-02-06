@@ -152,3 +152,18 @@ def get_sentences(input):
             sentences.append(line.strip())
             line = f.readline()
     return sentences
+
+
+
+def convertir_chaine_en_temps(temps_str:str)-> datetime:
+    # Formatter la chaîne de caractères en timedelta
+    temps_delta = datetime.strptime(temps_str, "%H:%M:%S.%f")
+
+    # Extraire l'heure, les minutes, les secondes et les microsecondes
+    heures, minutes, secondes = temps_delta.hour, temps_delta.minute, temps_delta.second
+    microsecondes = temps_delta.microsecond
+
+    # Formater la sortie pour afficher uniquement l'heure, les minutes, les secondes et les millisecondes
+    temps_formate = f"{heures:02d}:{minutes:02d}:{secondes:02d}.{microsecondes // 1000:03d}"
+
+    return temps_formate
