@@ -31,6 +31,16 @@ def time_to_milliseconds(timestamp):
 
     return total_milliseconds
 
+def time_to_seconds(timestamp):
+    # Split the timestamp into hours, minutes, seconds, and milliseconds
+    milliseconds = int(timestamp.split('.')[1])
+    tmp = timestamp.split('.')[0]
+    hours, minutes, seconds = map(int, tmp.split(':'))
+
+    # Calculate the total seconds
+    total_seconds = hours * 3600 + minutes * 60 + seconds + milliseconds / 1000.0
+
+    return total_seconds
 
 
 def lister_fichiers_with_path(dossier):
@@ -75,7 +85,7 @@ def ajouter_secondes(temps_str, secondes_a_ajouter):
     return nouveau_temps_str
 
 
-def get_dict_vtt(input):
+def get_dict_vtt_clean(input):
     with open(input,encoding="utf-8") as f:
         lines = f.readlines()
 
@@ -100,6 +110,11 @@ def get_dict_vtt(input):
                 text=text.replace("... -G. Attal : ","")
                 text=text.replace("-G. Attal : ","")
                 text=text.replace("G. Attal : ","")
+                text = text.replace("-Bonjour", "Bonjour")
+                text = text.replace("Bonjour.", "Bonjour,")
+                text = re.sub(r'["“”«»]', '', text)
+                if text.startswith("-"):
+                    text = text.replace("-","")
 
             dict_sub[i] = {'start': start_time, 'end': end_time, 'text': text.strip()}
             i += 1
@@ -108,6 +123,33 @@ def get_dict_vtt(input):
 
     return dict_sub
 
+def get_dict_vtt(input):
+    with open(input,encoding="utf-8") as f:
+        lines = f.readlines()
+
+    dict_sub = {}
+    i = 0
+    j = 0  
+
+    while j < len(lines): 
+        element = lines[j]
+        if element.startswith("00:") or element.startswith("01:") or element.startswith("02:"):
+            # Extraire le temps de début et de fin
+            timing_line = element.strip().split(' --> ')
+            start_time, end_time = timing_line
+
+            text = ""
+            while j + 1 < len(lines) and not lines[j + 1].startswith("00:") and not lines[j+1].startswith("01:") and not lines[j+1].startswith("02:"):
+                j += 1
+                content = lines[j]
+                text = text + " " + content.strip()
+
+            dict_sub[i] = {'start': start_time, 'end': end_time, 'text': text.strip()}
+            i += 1
+
+        j += 1
+
+    return dict_sub
 
 def create_vtt_file(dictionary, output_file_path):
     with open(output_file_path, 'w', encoding='utf-8') as file:
