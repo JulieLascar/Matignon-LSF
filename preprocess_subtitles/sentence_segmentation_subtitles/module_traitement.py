@@ -6,10 +6,23 @@ spacy.prefer_gpu()
 nlp = spacy.load("fr_dep_news_trf")
 from spacy.language import Language
 from datetime import datetime, timedelta
+import shutil
 
 """
 Ce module regroupe les différentes fonctions utiles aux traitements des fichiers .vtt. 
 """
+
+
+def time_to_seconds(timestamp):
+    # Split the timestamp into hours, minutes, seconds, and milliseconds
+    milliseconds = int(timestamp.split('.')[1])
+    tmp = timestamp.split('.')[0]
+    hours, minutes, seconds = map(int, tmp.split(':'))
+
+    # Calculate the total seconds
+    total_seconds = hours * 3600 + minutes * 60 + seconds + milliseconds / 1000.0
+
+    return total_seconds
 
 def time_to_milliseconds(timestamp):
 
@@ -84,6 +97,9 @@ def ajouter_secondes(temps_str, secondes_a_ajouter):
 
     return nouveau_temps_str
 
+def convertir_grand_nombre(nombre_texte):
+    nombre_sans_points = re.sub(r'(\d)\.(\d)', r'\1\2', nombre_texte)
+    return nombre_sans_points
 
 def get_dict_vtt_clean(input):
     with open(input,encoding="utf-8") as f:
@@ -105,16 +121,16 @@ def get_dict_vtt_clean(input):
                 j += 1
                 content = lines[j]
                 text = text + " " + content.strip()
-                text=text.replace("[INAUDIBLE]","")
-                text=text.replace("[ INAUDIBLE ]","")
                 text=text.replace("... -G. Attal : ","")
                 text=text.replace("-G. Attal : ","")
                 text=text.replace("G. Attal : ","")
                 text = text.replace("-Bonjour", "Bonjour")
                 text = text.replace("Bonjour.", "Bonjour,")
+                text = text.replace(" M."," Monsieur")
+                text = text.replace(" Mme"," Madame")
                 text = re.sub(r'["“”«»]', '', text)
-                if text.startswith("-"):
-                    text = text.replace("-","")
+                text = text.replace("-"," ")
+                text = convertir_grand_nombre(text)
 
             dict_sub[i] = {'start': start_time, 'end': end_time, 'text': text.strip()}
             i += 1
@@ -122,6 +138,17 @@ def get_dict_vtt_clean(input):
         j += 1
 
     return dict_sub
+
+
+def segmenter_texte_en_phrases(texte):
+    # Utilisation de l'expression régulière pour diviser le texte en phrases
+    phrases = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', texte)
+    return phrases
+
+def convertir_grand_nombre(nombre_texte):
+    nombre_sans_points = re.sub(r'(\d)\.(\d)', r'\1\2', nombre_texte)
+    return nombre_sans_points
+
 
 def get_dict_vtt(input):
     with open(input,encoding="utf-8") as f:
@@ -209,3 +236,20 @@ def convertir_chaine_en_temps(temps_str:str)-> datetime:
     temps_formate = f"{heures:02d}:{minutes:02d}:{secondes:02d}.{microsecondes // 1000:03d}"
 
     return temps_formate
+
+
+def deplacer_fichiers(chemins_source, dossier_destination):
+    # Vérifier si le dossier de destination existe, sinon le créer
+    if not os.path.exists(dossier_destination):
+        print(f"Le dossier de destination '{dossier_destination}' n'existe pas. Création en cours...")
+        os.makedirs(dossier_destination)
+
+    # Boucler à travers les chemins de fichiers et les déplacer vers le dossier de destination
+    for chemin_source in chemins_source:
+        # Extraire le nom du fichier du chemin source
+        nom_fichier = os.path.basename(chemin_source)
+        chemin_destination = os.path.join(dossier_destination, nom_fichier)
+
+        # Déplacer le fichier
+        shutil.move(chemin_source, chemin_destination)
+        print(f"Le fichier '{nom_fichier}' a été déplacé vers '{dossier_destination}'.")

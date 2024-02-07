@@ -13,3 +13,4 @@ Explications des différentes données dans ce dossier :
 - `sentence_matignon` : fichier contenant une phrase par ligne, issu des sous titres de Matignon-LSF - version corrigée manuellement
 - `sentence_mediapi` : fichier contenant une phrase par ligne, issu des sous titres de Mediapi - version corrigée manuellement
 - `data_original.zip` : Données utilisées tel quel pour le rendu de l'article du 22/02/24
+- `donnees_V1.0.0.1` : données temporaires archivées, non utilisées - test sur un nouveau procédé de pré-traitement mais qui n'a pas abouti.
