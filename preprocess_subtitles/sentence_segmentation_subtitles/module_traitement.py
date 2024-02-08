@@ -121,6 +121,7 @@ def get_dict_vtt_clean(input):
                 j += 1
                 content = lines[j]
                 text = text + " " + content.strip()
+                text = text.replace("(...)","[SUSPENSION]") #régler ce problème. 
                 text=text.replace("... -G. Attal : ","")
                 text=text.replace("-G. Attal : ","")
                 text=text.replace("G. Attal : ","")
