@@ -101,6 +101,56 @@ def convertir_grand_nombre(nombre_texte):
     nombre_sans_points = re.sub(r'(\d)\.(\d)', r'\1\2', nombre_texte)
     return nombre_sans_points
 
+def remplacer_points_adresses_email(texte):
+    # Expression régulière pour repérer les adresses e-mail
+    pattern = r'\b[\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,}\b'
+
+    # Fonction de remplacement pour remplacer les points par "POINT"
+    def remplacer(match):
+        return match.group().replace('.', 'POINT')
+
+    texte_modifie = re.sub(pattern, remplacer, texte)
+    return texte_modifie
+
+def remplacer_points_adresses(texte):
+    # Expression régulière pour repérer différentes formes d'adresses de site internet
+    pattern = r'\b(?:https?://)?(?:www\.)?[\w.-]+\.[a-zA-Z]{2,}\b'
+
+    # Fonction de remplacement pour remplacer les points par "POINT"
+    def remplacer(match):
+        return match.group().replace('.', 'POINT')
+
+    texte_modifie = re.sub(pattern, remplacer, texte)
+    return texte_modifie
+
+def normaliser_points_de_suspension(texte):
+    # Ajouter un espace après les points de suspension suivis d'une lettre
+    texte_modifie = re.sub(r'\.\.\.(\w)', r'... \1', texte)
+
+    # Retirer un espace avant les points de suspension précédés d'une lettre
+    texte_modifie = re.sub(r'(\w)\s*\.\.\.', r'\1...', texte_modifie)
+
+    return texte_modifie
+
+def remplacer_ponctuation_html(texte):
+    substitutions = [
+        ("(", "&#40;"),
+        (")", "&#41;"),
+        ("?", "&#63;"),
+        ("!", "&#33;"),
+        (".", "&#46;"),
+        ("...", "&#8230;")
+    ]
+
+    def remplacer_match(match):
+        contenu_parentheses = match.group(1)
+        for recherche, remplacement in substitutions:
+            contenu_parentheses = contenu_parentheses.replace(recherche, remplacement)
+        return f'({contenu_parentheses})'
+
+    texte_modifie = re.sub(r'\(([^)]*)\)', remplacer_match, texte)
+    return texte_modifie
+
 def get_dict_vtt_clean(input):
     with open(input,encoding="utf-8") as f:
         lines = f.readlines()
@@ -121,7 +171,41 @@ def get_dict_vtt_clean(input):
                 j += 1
                 content = lines[j]
                 text = text + " " + content.strip()
-                text = text.replace("(...)","[SUSPENSION]") #régler ce problème. 
+                text = normaliser_points_de_suspension(text)
+                text = text.replace("(...)","[SUSPENSIONP]") #régler ce problème.
+                text = remplacer_ponctuation_html(text)
+                ### changement
+                text = text.replace("…","...")
+                # text = text.replace("... ...","[DOUBLE_SUSPENSION]")
+                #text = text.replace(" ... ","[SUSPENSION].") ### gérer la double suspension !
+                text = re.sub(r'["“”«»]', '', text)
+                text = text.replace("(???)","[INTERROGATION3]")
+                text = text.replace("(?)","[INTERROGATION1]")
+                text = text.replace("(??)","[INTERROGATION2]")
+                text = text.replace("( ?)","[INTERROGATION1]")
+                text = text.replace("?,","[INTERROGATION],")
+                text = text.replace("!,","[EXCLAMATION],")
+                text = text.replace("etc.,","etc,")
+                text = text.replace("etc.)","etc)")
+                text = text.replace("Etc","etc")
+                text = text.replace("PAM !","[PAM]")
+                text = text.replace("Média'Pi!","[NOM_MEDIA]")
+                text = text.replace("Média'Pi !","[NOM_MEDIA]")
+                text = text.replace("Media'Pi !","[NOM_MEDIA]")
+                text = text.replace("Média'Pi&nbsp;!","[NOM_MEDIA]")
+                text = text.replace("Média' Pi !","[NOM_MEDIA]")
+                text = text.replace(".e.s","")
+                text = text.replace(".ne.s","")
+                text = text.replace(".e.","")
+                text = text.replace(".e","")
+                text = text.replace("!!","!")
+                text = text.replace("??","?")
+                text = re.sub(r'\b(\w+)\s*\.\.\.\s*(\w+)\b', r'\1... \2', text)
+                text = remplacer_points_adresses_email(text)
+                text = remplacer_points_adresses(text)
+                text = text.replace(".,","[POINT],")
+                text = text.replace("y.a","y a")
+                ### 
                 text=text.replace("... -G. Attal : ","")
                 text=text.replace("-G. Attal : ","")
                 text=text.replace("G. Attal : ","")
@@ -129,9 +213,11 @@ def get_dict_vtt_clean(input):
                 text = text.replace("Bonjour.", "Bonjour,")
                 text = text.replace(" M."," Monsieur")
                 text = text.replace(" Mme"," Madame")
-                text = re.sub(r'["“”«»]', '', text)
                 text = text.replace("-"," ")
                 text = convertir_grand_nombre(text)
+                # text = text.replace("(","&#40;")
+                # text = text.replace(")","&#41;")
+                
 
             dict_sub[i] = {'start': start_time, 'end': end_time, 'text': text.strip()}
             i += 1
