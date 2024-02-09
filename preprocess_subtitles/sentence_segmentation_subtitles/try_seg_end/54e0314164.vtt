@@ -10,13 +10,13 @@ Nous sommes le 17 mars 2020.
 Bonjour, bienvenue !
 
 00:00:12.220 --> 00:00:16.270
-Face à la crise sanitaire que connait la France, l’équipe de Média’Pi!
+Face à la crise sanitaire que connait la France, l’équipe de [NOM_MEDIA]
 
 00:00:16.270 --> 00:00:18.642
 a jugé nécessaire d’approfondir le sujet.
 
 00:00:19.060 --> 00:00:20.698
-Après réflexion, Média’Pi!
+Après réflexion, [NOM_MEDIA]
 
 00:00:20.698 --> 00:00:24.037
 a décidé de diffuser ce flash gratuitement pour tous.
@@ -99,11 +99,8 @@ Après l’allocution d’Emmanuel Macron, le ministre de l’Intérieur Christo
 00:03:37.100 --> 00:03:54.280
 Il sera donc possible de sortir de chez soi seulement pour : 1  les déplacements entre le domicile et le lieu de travail, si le travail à la maison est impossible, ou les déplacements professionnels ne pouvant être différés.
 
-00:03:55.460 --> 00:04:06.296
-2  les déplacements pour effectuer des achats de première nécessité, comme les courses alimentaires dans des établissements autorisés (liste sur gouvernement.
-
-00:04:06.296 --> 00:04:06.570
-fr).
+00:03:55.460 --> 00:04:06.640
+2  les déplacements pour effectuer des achats de première nécessité, comme les courses alimentaires dans des établissements autorisés (liste sur gouvernement&#46;fr).
 
 00:04:07.120 --> 00:04:12.580
 3  les déplacements pour motifs de santé, tels qu'à l'hôpital ou chez le médecin.
@@ -199,7 +196,7 @@ Dans le Haut Rhin, par exemple, les soignants avouent faire un choix, entre ceux
 En clair, la maladie Covid 19 se soigne, mais certains vont mourir parce qu'il y a un manque de moyens.
 
 00:08:15.440 --> 00:08:22.060
-D’autres malades graves (cancers…) risquent aussi de pâtir indirectement de cette crise sanitaire.
+D’autres malades graves (cancers[SUSPENSION]&#46;) risquent aussi de pâtir indirectement de cette crise sanitaire.
 
 00:08:22.900 --> 00:08:31.140
 Voilà pourquoi il est vraiment important de lutter tous ensemble contre la propagation du virus Covid 19.
@@ -240,11 +237,8 @@ De même, si vous avez des symptômes légers, mais que vous souffrez aussi d’
 00:10:11.900 --> 00:10:19.280
 5 Désormais, le dépistage de la maladie n'est plus systématique, comme auparavant en cas de doute.
 
-00:10:19.360 --> 00:10:31.235
-Il est réservé aux personnes suivantes : les personnes âgées de plus de 70 ans, les personnes en situation de handicap (les sourds sont ils considérés comme entrant dans cette catégorie ?
-
-00:10:31.235 --> 00:10:49.016
-), les patients présentant certaines maladies (insuffisance rénale ou respiratoire, problèmes cardiovasculaires, diabète de type 1, personne avec un faible système immunitaire, par exemple), les femmes enceintes à partir de 6 mois, ainsi que les professionnels de santé, bien sûr.
+00:10:19.360 --> 00:10:49.080
+Il est réservé aux personnes suivantes : les personnes âgées de plus de 70 ans, les personnes en situation de handicap (les sourds sont ils considérés comme entrant dans cette catégorie &#63;), les patients présentant certaines maladies (insuffisance rénale ou respiratoire, problèmes cardiovasculaires, diabète de type 1, personne avec un faible système immunitaire, par exemple), les femmes enceintes à partir de 6 mois, ainsi que les professionnels de santé, bien sûr.
 
 00:10:49.220 --> 00:10:51.820
 Le dépistage est donc réservé à toutes ces personnes énumérées.

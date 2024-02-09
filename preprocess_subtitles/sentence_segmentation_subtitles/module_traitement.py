@@ -227,6 +227,48 @@ def get_dict_vtt_clean(input):
     return dict_sub
 
 
+
+def get_dict_vtt_clean_matignon(input):
+    with open(input,encoding="utf-8") as f:
+        lines = f.readlines()
+
+    dict_sub = {}
+    i = 0
+    j = 0  
+
+    while j < len(lines): 
+        element = lines[j]
+        if element.startswith("00:") or element.startswith("01:") or element.startswith("02:"):
+            # Extraire le temps de début et de fin
+            timing_line = element.strip().split(' --> ')
+            start_time, end_time = timing_line
+
+            text = ""
+            while j + 1 < len(lines) and not lines[j + 1].startswith("00:") and not lines[j+1].startswith("01:") and not lines[j+1].startswith("02:"):
+                j += 1
+                content = lines[j]
+                text = text + " " + content.strip()
+                text=text.replace("... -G. Attal : ","")
+                text=text.replace("-G. Attal : ","")
+                text=text.replace("G. Attal : ","")
+                text = text.replace("-Bonjour", "Bonjour")
+                text = text.replace("Bonjour.", "Bonjour,")
+                text = text.replace(" M."," Monsieur")
+                text = text.replace(" Mme"," Madame")
+                text = text.replace("-"," ")
+                text = convertir_grand_nombre(text)
+                # text = text.replace("(","&#40;")
+                # text = text.replace(")","&#41;")
+                
+
+            dict_sub[i] = {'start': start_time, 'end': end_time, 'text': text.strip()}
+            i += 1
+
+        j += 1
+
+    return dict_sub
+
+
 def segmenter_texte_en_phrases(texte):
     # Utilisation de l'expression régulière pour diviser le texte en phrases
     phrases = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', texte)
