@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 import shutil
 
 """
-Ce module regroupe les différentes fonctions utiles aux traitements des fichiers .vtt. 
+This module gathers various functions useful for processing .vtt files.
 """
 
 

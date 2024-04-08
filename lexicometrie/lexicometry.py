@@ -12,12 +12,21 @@ from tqdm import tqdm
 from typing import List
 import matplotlib.pyplot as plt
 import argparse
+import matplotlib as mpl  
+from matplotlib.patches import Rectangle
+
+mpl.rcParams['figure.dpi'] = 300
+#mpl.rc('font',family='Marianne', size=13)
+mpl.rc('font',family='Arial', size=13)
+
 """
-Le script donne en sortie des informations sur le corpus et trois fichiers :
-- information_corpus.txt : fichier texte avec des informations sur le nombre de token et la taille du vocabulaire
-- data_subtitles.json : dictionnaire avec les VERB, ADJ, NOUN et PROPN trier par fréquence
-- data_subtitles.csv : dictionnaire avec les VERB, ADJ, NOUN et PROPN trier par fréquence
-Pour l'utiliser : python lexicometry.py --subtitles_folder PATH/TO/FOLDER
+The script outputs information about the corpus and three files:
+
+    - information_corpus.txt: a text file with information about the number of tokens and the size of the vocabulary.
+    - data_subtitles.json: a dictionary with VERBs, ADJs, NOUNs, and PROPNs sorted by frequency.
+    - data_subtitles.csv: a dictionary with VERBs, ADJs, NOUNs, and PROPNs sorted by frequency.
+    - 5 figures (.png) Top 20 most frequent VERBs|ADJs|NOUNs|PROPs|ALL
+To use it: python lexicometry.py --subtitles_folder PATH/TO/FOLDER
 """
 
 def lister_fichiers(chemin:str)->list:
@@ -196,15 +205,15 @@ if __name__=="__main__":
         fig, ax = plt.subplots(figsize=(9, 3))
 
         # Tracer l'histogramme
-        ax.bar(names, values)
-
+        ax.bar(names, values, color='#002654')
+        plt.ylabel('Occurences')
         # Ajouter un titre à la figure
-        fig.suptitle(f'Histogramme des fréquences de {title}')
+        fig.suptitle(f'Top 20 most frequent {title.lower()}')
 
         # Faire pivoter les étiquettes de l'axe des abscisses
         ax.set_xticklabels(names, rotation=45, ha='right')
 
         #Enregistrer la figure
-        plt.savefig(f'figure_frequence_{title}.png',bbox_inches='tight')
+        plt.savefig(f'figure_frequence_{title}.pdf',bbox_inches='tight')
 
     

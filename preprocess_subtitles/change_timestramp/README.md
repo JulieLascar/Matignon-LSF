@@ -1,5 +1,26 @@
 # Change timestamps
 
+***french version below***
+
+
+
+This folder contains the notebook `change_timecode.ipynb` and the module `module.py` allowing the creation of new subtitles with different timestamps:
+- Either we add time to the subtitles to mitigate the offset between the signer and the subtitle
+- Or we disrupt the subtitle alignment (using Mediapi) to have a version unaligned with the signer (and use Hannah Bull's Transformers SAT)
+
+This folder also contains the data from the notebooks:
+- `non_aligned_mediapi`: original Mediapi subtitles with disrupted alignment
+- `non_aligned_mediapi_sent_seg`: Mediapi subtitles segmented into sentences with disrupted alignment
+- `cr_plus_x_sec`: Matignon-LSF subtitles with the subtitle time increased by one second.
+
+<br/>
+<br/>
+
+___
+
+<br/>
+<br/>
+
 Ce dossier contient le notebook `change_timecode.ipynb` et le module `module.py` permettant de créer de nouveaux sous-titres ayant des timestamps différents :
 - Soit on ajoute du temps aux sous-titres afin d'estomber le décalage entre le signeur et le sous-titre
 - Soit on bruite l'alignement des sous-titre (Mediapi) pour avoir une version non aligné avec le signeur (et utiliser le Transformers SAT de Hannah Bull)
