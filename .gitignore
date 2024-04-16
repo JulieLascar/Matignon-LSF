@@ -2,6 +2,7 @@
 lexicometrie.tar.xz
 meta_data.tar.xz
 signers_detection/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
