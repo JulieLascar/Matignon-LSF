@@ -1,3 +1,7 @@
+# Perso
+lexicometrie.tar.xz
+meta_data.tar.xz
+ignore/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
