@@ -11,13 +11,14 @@ In this repository, we share the diverse processes to enable reproduction and ex
 ### 1. Collecting the SL videos and subtitles
 scripts in **collecting_datas**  
 
-### 2. Make I3D features
+### 2. Making I3D features
 scripts in **I3D**  
 
 ### 3. Processing the subtitles
 scripts in **Preprocess subtitles**
 
-### 4. Make statistics
+### 4. Making lexicon statistics
+scripts in **lexicometry**
 
 
  <!-- 
