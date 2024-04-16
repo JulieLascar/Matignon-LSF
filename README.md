@@ -9,19 +9,19 @@ corresponding subtitles.
 ## Content
 In this repository, we share the diverse processes to enable reproduction and expansion of the corpus, as new press release takes place once a week.  
 ### 1. Collecting the SL videos and subtitles
-scripts in [**collecting_datas**](collecting_datas)  
+scripts in [**collecting_data**](collecting_data)  
 
 ### 2. Making I3D features
-scripts in **I3D**  
+scripts in [**I3D**](I3D)  
 
 ### 3. Processing the subtitles
-scripts in **Preprocess subtitles**
+scripts in [**Preprocess subtitles**](preprocess_subtitles)
 
 ### 4. Making lexicon statistics
-scripts in **lexicometry**
+scripts in [**lexicometry**](lexicometry)
 
 ### 5. Getting meta-data
-scripts in **meta_data**
+scripts in [**meta_data**](meta_data)
 
  <!-- 
  1. Scrap videos from Youtube Y
