@@ -5,7 +5,7 @@ This repository contains the tools that were used to build the corpus presented 
 Matignon-LSF is the first dataset of interpreted French Sign Language (LSF) and one of the largest open LSF dataset to date. This is a dataset of live interpreted LSF during public speeches by the French government. The dataset comprises 39 hours of LSF videos with French language audio and
 corresponding subtitles.  
 In this repository, we share the diverse processes to enable reproduction and expansion of the corpus, as new press release takes place once a week.  
-![schema](images/Matgnon_screenshot.png width="300")
+![schema](images/Matgnon_screenshot.png){:width="300px"}
 
 
 
