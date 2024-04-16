@@ -9,7 +9,7 @@ corresponding subtitles.
 ## Content
 In this repository, we share the diverse processes to enable reproduction and expansion of the corpus, as new press release takes place once a week.  
 ### 1. Collecting the SL videos and subtitles
-scripts in **collecting_datas**  
+scripts in [**collecting_datas**](collecting_datas)  
 
 ### 2. Making I3D features
 scripts in **I3D**  
