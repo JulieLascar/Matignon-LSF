@@ -20,6 +20,8 @@ scripts in **Preprocess subtitles**
 ### 4. Making lexicon statistics
 scripts in **lexicometry**
 
+### 5. Getting meta-data
+scripts in **meta_data**
 
  <!-- 
  1. Scrap videos from Youtube Y
