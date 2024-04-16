@@ -13,8 +13,10 @@ from beartype import beartype
 import models
 import tqdm
 
+
 def torch_to_list(torch_tensor):
     return torch_tensor.cpu().numpy().tolist()
+
 
 def save_pred(preds, checkpoint="checkpoint", filename="preds_valid.mat"):
     preds = to_numpy(preds)
@@ -24,6 +26,7 @@ def save_pred(preds, checkpoint="checkpoint", filename="preds_valid.mat"):
     print(f"Saving to {filepath}")
     scipy.io.savemat(filepath, mdict=mdict, do_compression=False, format="4")
 
+
 def to_torch(ndarray):
     if type(ndarray).__module__ == "numpy":
         return torch.from_numpy(ndarray)
@@ -31,12 +34,14 @@ def to_torch(ndarray):
         raise ValueError(f"Cannot convert {type(ndarray)} to torch tensor")
     return ndarray
 
+
 def to_numpy(tensor):
     if torch.is_tensor(tensor):
         return tensor.cpu().numpy()
     elif type(tensor).__module__ != "numpy":
         raise ValueError(f"Cannot convert {type(tensor)} to numpy array")
     return tensor
+
 
 def im_to_numpy(img):
     img = to_numpy(img)
@@ -62,9 +67,9 @@ def resize_generic(img, oheight, owidth, interp="bilinear", is_flow=False):
     # resized_image = cv2.resize(image, (100, 50))
     ht, wd, chn = img.shape[0], img.shape[1], img.shape[2]
     if chn == 1:
-        resized_img = scipy.misc.imresize(
-            img.squeeze(), [oheight, owidth], interp=interp, mode="F"
-        ).reshape((oheight, owidth, chn))
+        resized_img = scipy.misc.imresize(img.squeeze(), [oheight, owidth], interp=interp, mode="F").reshape(
+            (oheight, owidth, chn)
+        )
     elif chn == 3:
         # resized_img = scipy.misc.imresize(img, [oheight, owidth], interp=interp)  # mode='F' gives an error for 3 channels
         resized_img = cv2.resize(img, (owidth, oheight))  # inverted compared to scipy
@@ -75,9 +80,7 @@ def resize_generic(img, oheight, owidth, interp="bilinear", is_flow=False):
             # resized_img[:, :, t] = scipy.misc.imresize(img[:, :, t], [oheight, owidth], interp=interp)
             # resized_img[:, :, t] = scipy.misc.imresize(img[:, :, t], [oheight, owidth], interp=interp, mode='F')
             # resized_img[:, :, t] = np.array(Image.fromarray(img[:, :, t]).resize([oheight, owidth]))
-            resized_img[:, :, t] = scipy.ndimage.interpolation.zoom(
-                img[:, :, t], [oheight, owidth]
-            )
+            resized_img[:, :, t] = scipy.ndimage.interpolation.zoom(img[:, :, t], [oheight, owidth])
     else:
         in_chn = 3
         # Workaround, would be better to pass #frames
@@ -90,14 +93,10 @@ def resize_generic(img, oheight, owidth, interp="bilinear", is_flow=False):
         resized_img = np.zeros((oheight, owidth, in_chn, nframes), dtype=img.dtype)
         for t in range(nframes):
             frame = img[:, :, :, t]  # img[:, :, t*3:t*3+3]
-            frame = cv2.resize(frame, (owidth, oheight)).reshape(
-                oheight, owidth, in_chn
-            )
+            frame = cv2.resize(frame, (owidth, oheight)).reshape(oheight, owidth, in_chn)
             # frame = scipy.misc.imresize(frame, [oheight, owidth], interp=interp)
             resized_img[:, :, :, t] = frame
-        resized_img = resized_img.reshape(
-            resized_img.shape[0], resized_img.shape[1], chn
-        )
+        resized_img = resized_img.reshape(resized_img.shape[0], resized_img.shape[1], chn)
 
     if is_flow:
         # print(oheight / ht)
@@ -118,9 +117,7 @@ def color_normalize(x, mean, std):
             t.sub_(m)
             t.div_(s)
     elif x.dim() == 5:
-        assert (
-            x.shape[1] == 3
-        ), "For batched video format, expected RGB along second dim"
+        assert x.shape[1] == 3, "For batched video format, expected RGB along second dim"
         x[:, 0].sub_(mean[0]).div_(std[0])
         x[:, 1].sub_(mean[1]).div_(std[1])
         x[:, 2].sub_(mean[2]).div_(std[2])
@@ -141,8 +138,7 @@ def load_rgb_video_GULVAROL(video_path: Path, fps: int) -> torch.Tensor:
     if cap_fps != fps:
         tmp_video_path = f"{video_path}.tmp.{video_path.suffix}"
         shutil.move(video_path, tmp_video_path)
-        cmd = (f"ffmpeg -i {tmp_video_path} -pix_fmt yuv420p "
-               f"-filter:v fps=fps={fps} {video_path}")
+        cmd = f"ffmpeg -i {tmp_video_path} -pix_fmt yuv420p " f"-filter:v fps=fps={fps} {video_path}"
         print(f"Generating new copy of video with frame rate {fps}")
         os.system(cmd)
         Path(tmp_video_path).unlink()
@@ -167,8 +163,7 @@ def load_rgb_video_GULVAROL(video_path: Path, fps: int) -> torch.Tensor:
     cap.release()
     # (nframes, 3, cap_height, cap_width) => (3, nframes, cap_height, cap_width)
     rgb = torch.stack(rgb).permute(1, 0, 2, 3)
-    print(f"Loaded video {video_path} with {f} frames [{cap_height}hx{cap_width}w] res. "
-          f"at {cap_fps}")
+    print(f"Loaded video {video_path} with {f} frames [{cap_height}hx{cap_width}w] res. " f"at {cap_fps}")
     return rgb
 
 
@@ -185,18 +180,17 @@ def load_rgb_video(video_path, fps: int) -> torch.Tensor:
     print(cap_width)
     print(nbf)
 
-    if nbf > 180000 :
+    if nbf > 180000:
         cap.release()
         return torch.zeros(1)
-    
-    else :
+
+    else:
         # cv2 won't be able to change frame rates for all encodings, so we use ffmpeg
         if cap_fps != fps:
             tmp_video_path = f"{video_path}.tmp.{video_path.suffix}"
-            print("HERE",tmp_video_path)
+            print("HERE", tmp_video_path)
             shutil.move(video_path, tmp_video_path)
-            cmd = (f"ffmpeg -i {tmp_video_path} -pix_fmt yuv420p "
-                f"-filter:v fps=fps={fps} {video_path}")
+            cmd = f"ffmpeg -i {tmp_video_path} -pix_fmt yuv420p " f"-filter:v fps=fps={fps} {video_path}"
             print(f"Generating new copy of video with frame rate {fps}")
             os.system(cmd)
             Path(tmp_video_path).unlink()
@@ -208,8 +202,8 @@ def load_rgb_video(video_path, fps: int) -> torch.Tensor:
 
         f = 0
         rgb = []
-        
-        while True  :
+
+        while True:
             # frame: BGR, (h, w, 3), dtype=uint8 0..255
             ret, frame = cap.read()
             if not ret:
@@ -220,20 +214,18 @@ def load_rgb_video(video_path, fps: int) -> torch.Tensor:
             #     new_h = int(height / 2)
             #     new_w = int(width / 2)
             #     frame = cv2.resize(frame.astype(np.uint8), (new_w, new_h), interpolation = cv2.INTER_AREA)
-            if height > 224 or width > 224 :
-                frame = cv2.resize(frame.astype(np.uint8), (224, 224), interpolation = cv2.INTER_AREA)
+            if height > 224 or width > 224:
+                frame = cv2.resize(frame.astype(np.uint8), (224, 224), interpolation=cv2.INTER_AREA)
             frame = frame[:, :, [2, 1, 0]]
             rgb_t = im_to_torch(frame)
             rgb.append(rgb_t)
             del frame
             f += 1
-            
-        
+
         cap.release()
         # (nframes, 3, cap_height, cap_width) => (3, nframes, cap_height, cap_width)
         rgb = torch.stack(rgb).permute(1, 0, 2, 3)
-        print(f"Loaded video {video_path} with {f} frames [{cap_height}hx{cap_width}w] res. "
-            f"at {cap_fps}")
+        print(f"Loaded video {video_path} with {f} frames [{cap_height}hx{cap_width}w] res. " f"at {cap_fps}")
         cap.release()
         return rgb
 
@@ -243,7 +235,8 @@ def prepare_input(
     rgb: torch.Tensor,
     resize_res: int = 256,
     inp_res: int = 224,
-    mean: torch.Tensor = 0.5 * torch.ones(3), std=1.0 * torch.ones(3),
+    mean: torch.Tensor = 0.5 * torch.ones(3),
+    std=1.0 * torch.ones(3),
 ):
     """
     Process the video:
@@ -255,9 +248,7 @@ def prepare_input(
     rgb_resized = np.zeros((iF, resize_res, resize_res, iC))
     for t in range(iF):
         tmp = rgb[:, t, :, :]
-        tmp = resize_generic(
-            im_to_numpy(tmp), resize_res, resize_res, interp="bilinear", is_flow=False
-        )
+        tmp = resize_generic(im_to_numpy(tmp), resize_res, resize_res, interp="bilinear", is_flow=False)
         rgb_resized[t] = tmp
     rgb = np.transpose(rgb_resized, (3, 0, 1, 2))
     # Center crop coords
@@ -270,11 +261,12 @@ def prepare_input(
     rgb = color_normalize(rgb, mean, std)
     return rgb
 
+
 @beartype
 def load_i3d_model(
-        i3d_checkpoint_path: Path,
-        num_classes: int,
-        num_in_frames: int,
+    i3d_checkpoint_path: Path,
+    num_classes: int,
+    num_in_frames: int,
 ) -> torch.nn.Module:
     """Load pre-trained I3D checkpoint, put in eval mode."""
     model = models.InceptionI3d(
@@ -296,9 +288,9 @@ def load_i3d_model(
 
 @beartype
 def sliding_windows(
-        rgb: torch.Tensor,
-        num_in_frames: int,
-        stride: int,
+    rgb: torch.Tensor,
+    num_in_frames: int,
+    stride: int,
 ) -> tuple:
     """
     Return sliding windows and corresponding (middle) timestamp
@@ -342,67 +334,68 @@ def main_i3d(
     num_in_frames: int,
     batch_size: int,
     stride: int,
-    save_features: bool):
-   
+    save_features: bool,
+):
     with BlockTimer("Loading I3D model"):
         model = load_i3d_model(
             i3d_checkpoint_path=i3d_checkpoint_path,
             num_classes=num_classes,
             num_in_frames=num_in_frames,
         )
-    print('model is in cuda :', next(model.parameters()).is_cuda)
-    #with BlockTimer("Loading video frames"):
+    print("model is in cuda :", next(model.parameters()).is_cuda)
+    # with BlockTimer("Loading video frames"):
     rgb_orig = load_rgb_video(
-            video_path=video_path,
-            fps=fps,
-        )
+        video_path=video_path,
+        fps=fps,
+    )
     print(rgb_orig.shape)
     if len(rgb_orig) == 1:
         return torch.zeros(1)
-    
-    else :
+
+    else:
         # Prepare: resize/crop/normalize
         rgb_input = prepare_input(rgb_orig)
         # Sliding window
         print(rgb_input.shape)
         nb_frames = rgb_input.shape[1]
-        nb_fenetres = nb_frames-num_in_frames+1
+        nb_fenetres = nb_frames - num_in_frames + 1
 
         all_features = torch.Tensor(nb_fenetres, 1024)
         for i in tqdm.tqdm(range(nb_fenetres)):
             # Forward pass
-            video_window = rgb_input[:,i:i+num_in_frames,:,:]
-            inp = video_window.reshape(1, video_window.shape[0], video_window.shape[1], video_window.shape[2], video_window.shape[3])
+            video_window = rgb_input[:, i : i + num_in_frames, :, :]
+            inp = video_window.reshape(
+                1, video_window.shape[0], video_window.shape[1], video_window.shape[2], video_window.shape[3]
+            )
             out = model(inp)
             all_features[i] = out["embds"].squeeze().data.cpu()
         print(all_features.shape)
         if save_features:
             scipy.io.savemat(feature_path, mdict={"preds": all_features}, do_compression=False, format="4")
-    # else :
-    #     # Prepare: resize/crop/normalize
-        
-    #     rgb_input = prepare_input(rgb_orig)
-    #     print(rgb_input.shape)
-    #     # Sliding window
-    #     rgb_slides, t_mid = sliding_windows(
-    #         rgb=rgb_input,
-    #         stride=stride,
-    #         num_in_frames=num_in_frames,
-    #     )
-    #     # Number of windows/clips
-    #     num_clips = rgb_slides.shape[0]
-    #     # Group the clips into batches
-    #     num_batches = math.ceil(num_clips / batch_size)
-    #     all_features = torch.Tensor(num_clips, 1024)
+        # else :
+        #     # Prepare: resize/crop/normalize
 
-    #     for b in range(num_batches):
-    #         inp = rgb_slides[b * batch_size : (b + 1) * batch_size]
-    #         # Forward pass
-    #         out = model(inp)
-    #         all_features[b] = out["embds"].squeeze().data.cpu()
+        #     rgb_input = prepare_input(rgb_orig)
+        #     print(rgb_input.shape)
+        #     # Sliding window
+        #     rgb_slides, t_mid = sliding_windows(
+        #         rgb=rgb_input,
+        #         stride=stride,
+        #         num_in_frames=num_in_frames,
+        #     )
+        #     # Number of windows/clips
+        #     num_clips = rgb_slides.shape[0]
+        #     # Group the clips into batches
+        #     num_batches = math.ceil(num_clips / batch_size)
+        #     all_features = torch.Tensor(num_clips, 1024)
 
+        #     for b in range(num_batches):
+        #         inp = rgb_slides[b * batch_size : (b + 1) * batch_size]
+        #         # Forward pass
+        #         out = model(inp)
+        #         all_features[b] = out["embds"].squeeze().data.cpu()
 
-    #     if save_features:
-    #         scipy.io.savemat(feature_path, mdict={"preds": all_features}, do_compression=False, format="4")
-        
+        #     if save_features:
+        #         scipy.io.savemat(feature_path, mdict={"preds": all_features}, do_compression=False, format="4")
+
         return all_features
