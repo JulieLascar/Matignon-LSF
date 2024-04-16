@@ -1,4 +1,5 @@
 import cv2
+import os
 from os import walk
 import datetime
 
@@ -9,7 +10,7 @@ L_duration = []
 video_nb = 0
 for v_id in L_vids:
     if "mp4" in v_id:
-        video_path = dict_path + v_id
+        video_path = os.path.join(dict_path, v_id)
         cap = cv2.VideoCapture(video_path)
         try:
             frames_nb = cap.get(cv2.CAP_PROP_FRAME_COUNT)
