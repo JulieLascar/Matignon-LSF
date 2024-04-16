@@ -1,4 +1,0 @@
-INFORMATIONS CORPUS : 
-
- nombre de tokens = 447139 
- taille du vocabulaire = 10659

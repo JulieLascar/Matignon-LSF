@@ -1,7 +1,7 @@
 # Perso
 lexicometrie.tar.xz
 meta_data.tar.xz
-
+signers_detections/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
