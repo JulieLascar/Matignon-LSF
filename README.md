@@ -7,7 +7,6 @@ Matignon-LSF is the first dataset of interpreted French Sign Language (LSF) and 
 corresponding subtitles.  
 
 ## Content
-------------------------------------------
 In this repository, we share the diverse processes to enable reproduction and expansion of the corpus, as new press release takes place once a week.  
 ### 1. Collecting the SL videos and subtitles
 scripts in **collecting_datas**  
