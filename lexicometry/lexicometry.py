@@ -31,16 +31,16 @@ To use it: python lexicometry.py --subtitles_folder PATH/TO/FOLDER
 
 def lister_fichiers(chemin:str)->list:
     """
-    La fonction prend en entrée un no mde dossier et renvoie la liste des fichiers qu'il contient.
+    The function takes a folder name as input and returns a list of files it contains.
 
     Args:
-        chemin (list): nom du dossier
+        path (str): name of the folder
 
     Returns:
-        list : liste des chemins des fichiers contenus dans le dossier
+        list: list of paths of files contained in the folder
 
     Examples:
-        lister_fichiers("subtitles") = ["subtitles/files.json",...]
+        list_files("subtitles") = ["subtitles/files.json",...]
     """
     try:
         os.path.isdir(chemin)
@@ -54,17 +54,18 @@ def lister_fichiers(chemin:str)->list:
 
 def json_to_text(file:str)->str:
     """
-    Convertion des fichiers json de sous titres en text. On ne garde que les valeurs de l'attribut 'text' du json.
+    Conversion of subtitle JSON files to text. Only the values of the 'text' attribute from the JSON are kept.
 
     Args:
-        file (str): nom du fichier json
+        file (str): name of the JSON file
 
     Returns:
-        str: contenu textuel
+        str: textual content
 
     Examples:
-        json_to_text("subtitles/file.json") = "Contenu textuel. De tout le fichier. ..."
+        json_to_text("subtitles/file.json") = "Textual content. Of the entire file. ..."
     """
+
     text = ""
     with open(file) as f:
         content = json.load(f)
@@ -79,14 +80,14 @@ def json_to_text(file:str)->str:
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--subtitles_folder', help='dossier de sous titre à traiter')
+    parser.add_argument('--subtitles_folder', help="subtitle's folder to process")
     args = parser.parse_args()
     dossier_cible = args.subtitles_folder 
 
     fichiers_dans_dossier = lister_fichiers(dossier_cible)
 
     whole_text = ""
-    for file in tqdm(fichiers_dans_dossier, desc="Traitement des fichiers"):
+    for file in tqdm(fichiers_dans_dossier, desc="files processing"):
         whole_text = whole_text + json_to_text(file)
 
     # gérer la mémoire de spacy pour le traitement du texte
@@ -111,7 +112,7 @@ if __name__=="__main__":
     # on récupère la taille du vocabulaire (nombre de lemme différent)
     taille_voc = len(c)
 
-    tt = f"INFORMATIONS CORPUS : \n\n nombre de tokens = {nb_token} \n taille du vocabulaire = {taille_voc}"
+    tt = f"INFORMATIONS CORPUS : \n\n token's number = {nb_token} \n vocabulary size = {taille_voc}"
     print(tt)
 
     # on renvoie les informations dans un fichier text + on les affiche
@@ -131,30 +132,39 @@ if __name__=="__main__":
     dict_lex = dict(counter)
 
     # on les trie par fréquence (ordre décroissant)
+    # sorted by frequency
     dict_lex=dict(sorted(dict_lex.items(), key=lambda item: item[1], reverse=True))
 
     # key sous forme de texte et non de tuple pour remplir un json
+    # key is string to file the json
     dict_lex_str = {str(key):value for key,value in dict_lex.items()}
 
     # enregistrer les informations dans un json
+    # save informations in json
     with open('data_subtitles.json', 'w') as mon_fichier:
 	    json.dump(dict_lex_str, mon_fichier)
 
     # et dans un csv
+    # and in csv
     colonnes = ['Lemme','POS','frequence']
     with open('date_subtitles.csv','w',newline='') as output:
         writer = csv.DictWriter(output, fieldnames=colonnes)
 
         # en tête
+        #header
         writer.writeheader()
 
         # écrire données
+        # writting data
         for key,value in dict_lex.items():
             lemma,pos = key
             writer.writerow({'Lemme': lemma, 'POS': pos, 'frequence': value})
 
     # on créer des histogrammes : 
     # pour les NOUN, ADJ, PROPN et VERB du corpus mélangé (trié par fréquece d'occurrence)
+    # We create histograms:
+    # for the NOUN, ADJ, PROPN, and VERB of the mixed corpus (sorted by frequency of occurrence)
+
     new_dict={}
     for i, (key, value) in enumerate(dict_lex.items()):
         lemma, pos = key
@@ -164,12 +174,14 @@ if __name__=="__main__":
             break
     
     # et un dictionnaire pour chaque POS enregistré (NOUN, VERB, ADJ, PROPN)
+    # and a dictionary for each POS recorded (NOUN, VERB, ADJ, PROPN)
     new_dict_verb = {}
     new_dict_noun = {}
     new_dict_adj = {}
     new_dict_propn = {}
     new_dict = {}
     # Limite pour chaque dictionnaire
+    # dictionary limits
     limite = 20
 
     for key, value in dict_lex.items():
@@ -189,31 +201,39 @@ if __name__=="__main__":
             new_dict_propn[lemma] = freq
         
         # Vérifier si toutes les limites sont atteintes
+        # check the limits
         if len(new_dict_verb) == limite and len(new_dict_noun) == limite and len(new_dict_adj) == limite and len(new_dict_propn) == limite and len(new_dict)==limite:
             break
 
     # liste des sous-dictionnaires de 20 items : 
+    # list of sub-dictionaries of 20 items:
     list_dict = [new_dict,new_dict_adj,new_dict_noun,new_dict_propn,new_dict_verb]
 
     # création des figures - enregistrement 
+    # create Figure and save them 
     for title,dictionnaire in zip(['All','ADJ','NOUN','PROPN','VERB'],list_dict):
         data = dictionnaire
         names = list(data.keys())
         values = list(data.values())
 
         # Créer une seule figure avec un axe
+        # Create a figure with one axe
         fig, ax = plt.subplots(figsize=(9, 3))
 
         # Tracer l'histogramme
+        # Create histogram
         ax.bar(names, values, color='#002654')
         plt.ylabel('Occurences')
         # Ajouter un titre à la figure
+        # Add title
         fig.suptitle(f'Top 20 most frequent {title.lower()}')
 
         # Faire pivoter les étiquettes de l'axe des abscisses
+        # Pivot abscisse's axe
         ax.set_xticklabels(names, rotation=45, ha='right')
 
         #Enregistrer la figure
+        # Save figure 
         plt.savefig(f'figure_frequence_{title}.pdf',bbox_inches='tight')
 
     
