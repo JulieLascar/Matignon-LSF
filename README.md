@@ -1,7 +1,7 @@
 # Matignon-LSF: a Large Multimodal Corpus of Interpreted French Sign Language (LREC-Coling Workshop 2024)
 <img src="images/Matgnon_screenshot.png" width="600">
 
-This repository contains the tools that were used to build the corpus presented in [**Matignon-LSF: a Large Multimodal Corpus of Interpreted French Sign Language**](https://aclanthology.org/2024.signlang-1.22.pdf).
+This repository contains the tools that were used to build the corpus presented in [**Matignon-LSF: a Large Multimodal Corpus of Interpreted French Sign Language**](https://aclanthology.org/2024.signlang-1.10.pdf).
 
 Matignon-LSF is the first dataset of interpreted French Sign Language (LSF) and one of the largest open LSF dataset to date. This is a dataset of live interpreted LSF during public speeches by the French government. The dataset comprises 39 hours of LSF videos with French language audio and
 corresponding subtitles.  
