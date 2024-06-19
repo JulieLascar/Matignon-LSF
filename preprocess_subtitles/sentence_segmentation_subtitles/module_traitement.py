@@ -382,3 +382,19 @@ def deplacer_fichiers(chemins_source, dossier_destination):
         # Déplacer le fichier
         shutil.move(chemin_source, chemin_destination)
         print(f"Le fichier '{nom_fichier}' a été déplacé vers '{dossier_destination}'.")
+
+def verifier_ou_creer_dossier(chemin):
+    """
+    Vérifie si un dossier existe, et s'il n'existe pas, le crée.
+
+    Args:
+    chemin (str): Le chemin du dossier à vérifier ou créer.
+
+    Returns:
+    str: Un message indiquant si le dossier existait déjà ou a été créé.
+    """
+    if not os.path.exists(chemin):
+        os.makedirs(chemin)
+        return f"Le dossier '{chemin}' a été créé."
+    else:
+        return f"Le dossier '{chemin}' existe déjà."
